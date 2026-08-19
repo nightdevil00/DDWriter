@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=DDWriter
+Comment=Write ISO images to USB drives using dd
+Exec=python3 ddwriter.py
+Icon=ddwriter
+Terminal=false
+Type=Application
+Categories=Utility;System;
+Keywords=usb;iso;dd;write;flash;
+StartupNotify=true
