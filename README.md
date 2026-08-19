@@ -52,9 +52,10 @@ git clone https://github.com/nightdevil00/DDWriter.git && cd DDWriter && ./insta
 ### Manual
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ddwriter.git
-cd ddwriter
-./install.sh
+git clone https://github.com/nightdevil00/DDWriter.git
+cd DDWriter
+# Copy files to desired location
+sudo cp ddwriter.py ddwriter.png /opt/ddwriter/
 ```
 
 ### Dependencies
