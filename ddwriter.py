@@ -490,14 +490,14 @@ class DDWriterWindow(Gtk.Window):
             "sudo", "-S", "-k",
             "dd", f"if={device_path}", "bs=8192", f"count={length // 8192}", "status=none"
         ]
-        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
-        proc.stdin.write(self._current_password + "\n")
+        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        proc.stdin.write((self._current_password + "\n").encode())
         proc.stdin.flush()
         while True:
             chunk = proc.stdout.read(8192)
             if not chunk:
                 break
-            sha256.update(chunk.encode('latin-1'))
+            sha256.update(chunk)
         proc.wait()
         return sha256.hexdigest()
     
