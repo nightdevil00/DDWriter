@@ -26,10 +26,10 @@
 - **Auto Eject** — Automatically eject device when complete
 - **Lightweight** — Single-file application, no bloat
 
-## Screenshots
+## Screenshot
 
 <p align="center">
-  <em>Screenshots coming soon</em>
+  <img src="screenshot.png" alt="DDWriter Screenshot">
 </p>
 
 ## Requirements
