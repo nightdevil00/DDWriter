@@ -104,6 +104,10 @@ DDWriter uses `dd` under the hood with `status=progress` for real-time feedback.
 4. Parses stdout to update the progress bar
 5. Optionally verifies the write via SHA256 checksums
 
+## Tested ISOs
+
+- Arch Linux
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
