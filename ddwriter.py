@@ -226,7 +226,7 @@ class DDWriterWindow(Gtk.Window):
                     continue
                 
                 name = dev.get("name", "")
-                model = dev.get("model", "Unknown").strip()
+                model = (dev.get("model") or "Unknown").strip()
                 size = dev.get("size", "Unknown")
                 removable = dev.get("rm", False)
                 
@@ -343,6 +343,7 @@ class DDWriterWindow(Gtk.Window):
     
     def _start_write(self, password):
         self.is_writing = True
+        self._current_password = password
         self.write_button.set_label("Cancel")
         self.progress_bar.set_fraction(0)
         self._set_status("Writing...")
@@ -484,15 +485,19 @@ class DDWriterWindow(Gtk.Window):
     
     def _hash_device(self, device_path, length):
         sha256 = hashlib.sha256()
-        with open(device_path, 'rb') as f:
-            remaining = length
-            while remaining > 0:
-                chunk_size = min(8192, remaining)
-                chunk = f.read(chunk_size)
-                if not chunk:
-                    break
-                sha256.update(chunk)
-                remaining -= len(chunk)
+        cmd = [
+            "sudo", "-S", "-k",
+            "dd", f"if={device_path}", "bs=8192", f"count={length // 8192}", "status=none"
+        ]
+        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+        proc.stdin.write(self._current_password + "\n")
+        proc.stdin.flush()
+        while True:
+            chunk = proc.stdout.read(8192)
+            if not chunk:
+                break
+            sha256.update(chunk.encode('latin-1'))
+        proc.wait()
         return sha256.hexdigest()
     
     def _eject_device(self):
@@ -500,7 +505,8 @@ class DDWriterWindow(Gtk.Window):
         try:
             # Try udisksctl first
             result = subprocess.run(
-                ["udisksctl", "power-off", "-b", self.selected_device.path],
+                ["sudo", "-S", "-k", "udisksctl", "power-off", "-b", self.selected_device.path],
+                input=self._current_password + "\n",
                 capture_output=True, text=True, timeout=10
             )
             if result.returncode == 0:
@@ -508,7 +514,8 @@ class DDWriterWindow(Gtk.Window):
             else:
                 # Fallback to eject
                 result = subprocess.run(
-                    ["eject", self.selected_device.path],
+                    ["sudo", "-S", "-k", "eject", self.selected_device.path],
+                    input=self._current_password + "\n",
                     capture_output=True, text=True, timeout=10
                 )
                 if result.returncode == 0:
