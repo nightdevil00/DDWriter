@@ -460,9 +460,10 @@ class DDWriterWindow(Gtk.Window):
             self._log("Computing source checksum...")
             source_hash = self._hash_file(self.selected_iso)
             
-            # Get target hash
+            # Get target hash (read only the same number of bytes as the ISO)
+            file_size = os.path.getsize(self.selected_iso)
             self._log("Computing target checksum...")
-            target_hash = self._hash_device(self.selected_device.path, len(source_hash) * 2)
+            target_hash = self._hash_device(self.selected_device.path, file_size)
             
             if source_hash == target_hash:
                 self._log("Verification passed: checksums match")
