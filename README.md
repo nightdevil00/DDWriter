@@ -43,6 +43,12 @@
 
 ## Installation
 
+### Automatic
+
+```bash
+git clone https://github.com/nightdevil00/DDWriter.git && cd DDWriter && ./install.sh
+```
+
 ### Manual
 
 ```bash
